@@ -11,12 +11,25 @@ class MapRenderer:
         
     def draw(self):
         self.draw_raw_segments()
+        
+    def draw_normal(self,p0,p1,color,scale=12):
+        p10 = p1-p0
+        normal = normalize(vec2(-p10.y,p10.x))
+        n0 = (p0 + p1) * 0.5
+        n1 = n0 + normal * scale
+        
+        ray.draw_line_v((n0.x, n0.y), (n1.x, n1.y), color )
     
     def draw_raw_segments(self):
         for p0, p1 in self.raw_segments:
             (x0,y0), (x1,y1) = p0, p1
             ray.draw_line_v((x0,y0),(x1,y1), ray.ORANGE)
+            
+            self.draw_normal(p0, p1, ray.ORANGE)
+            
             ray.draw_circle_v((x0,y0),3,ray.WHITE)
+
+            
     
     def remap_array(self, arr: list[vec2]):
         return [(self.remap_vec2(p0), self.remap_vec2(p1)) for p0, p1 in arr]
@@ -29,7 +42,7 @@ class MapRenderer:
     def remap_x(self, x, out_min=MAP_OFFSET, out_max=MAP_WIDTH):
         return (x - self.x_min) * (out_max - out_min) / (self.x_max - self.x_min) + out_min
     
-    def remap_y(self, y, out_min=MAP_OFFSET, out_max=MAP_WIDTH):
+    def remap_y(self, y, out_min=MAP_OFFSET, out_max=MAP_HEIGHT):
         return (y - self.y_min) * (out_max - out_min) / (self.y_max - self.y_min) + out_min
     
 
