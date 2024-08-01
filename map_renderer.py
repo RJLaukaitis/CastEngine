@@ -9,8 +9,30 @@ class MapRenderer:
         
         self.raw_segments = self.remap_array(raw_segments)
         
+        self.segments = self.remap_array(
+            [seg.pos for seg in self.engine.bsp_builder.segments])
+        self.counter =0.0
+        
     def draw(self):
         self.draw_raw_segments()
+        self.draw_segments()
+        self.draw_player()
+        self.counter+= 0.0005
+        
+    def draw_player(self):
+        x0, y0 = p0 = self.remap_vec2(self.engine.bsp_traverser.cam_pos)
+        ray.draw_circle_v((x0,y0), 10, ray.GREEN)
+        
+    def draw_segments(self, seg_color = ray.ORANGE):
+        segment_ids = self.engine.bsp_traverser.seg_ids_to_draw
+        
+        for seg_id in segment_ids[:int(self.counter) % (len(segment_ids) + 1)]:
+            (x0,y0), (x1,y1) = p0, p1 = self.segments[seg_id]
+            
+            ray.draw_line_v((x0,y0), (x1,y1), seg_color)
+            self.draw_normal(p0, p1, seg_color)
+            
+            ray.draw_circle_v((x0,y0), 3, ray.WHITE)
         
     def draw_normal(self,p0,p1,color,scale=12):
         p10 = p1-p0
@@ -23,11 +45,7 @@ class MapRenderer:
     def draw_raw_segments(self):
         for p0, p1 in self.raw_segments:
             (x0,y0), (x1,y1) = p0, p1
-            ray.draw_line_v((x0,y0),(x1,y1), ray.ORANGE)
-            
-            self.draw_normal(p0, p1, ray.ORANGE)
-            
-            ray.draw_circle_v((x0,y0),3,ray.WHITE)
+            ray.draw_line_v((x0,y0),(x1,y1), ray.DARKGRAY)
 
             
     
