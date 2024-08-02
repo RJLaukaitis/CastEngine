@@ -39,9 +39,9 @@ class Camera:
     
     def get_forward(self) -> glm.vec3:
         return normalize(vec3(
-            self.target.x -self.pos_3.x,
-            self.target.y -self.pos_3.y,
-            self.target.z -self.pos_3.z,
+            self.target.x -self.pos_3d.x,
+            self.target.y -self.pos_3d.y,
+            self.target.z -self.pos_3d.z,
         ))
     
     def init_cam_step(self):

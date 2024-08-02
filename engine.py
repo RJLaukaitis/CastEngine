@@ -21,7 +21,8 @@ class Engine:
         self.bsp_traverser.update()
     
     def draw_2d(self):
-        self.map_renderer.draw()
+        #self.map_renderer.draw()
+        ray.draw_fps(10,10)
     
     def draw_3d(self):
         ray.begin_mode_3d(self.camera.m_cam)
@@ -34,6 +35,6 @@ class Engine:
         ray.begin_drawing()
         ray.clear_background(ray.BLACK)
         self.draw_3d()
-        #self.draw_2d()
+        self.draw_2d()
         
         ray.end_drawing()
