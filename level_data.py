@@ -16,7 +16,7 @@ class LevelData:
         self.handle_sector_data()
         
         self.raw_segments = []
-        self.handle_segments_of_sector_boundaires()
+        self.handle_segments_of_sector_boundaries()
         
     def handle_sector_data(self):
         for sec_id, sector_data in self.sector_data.items():
@@ -24,7 +24,7 @@ class LevelData:
             sector = Sector(
                 floor_h= sector_data['floor_h'],
                 ceil_h= sector_data['ceil_h'],
-                floor_tex_id=sector_data.get('floor_tex_id', 0)
+                floor_tex_id=sector_data.get('floor_tex_id', 0),
                 ceil_tex_id=sector_data.get('ceil_tex_id', 0),
             )
             self.sectors[sec_id] = sector
@@ -35,4 +35,16 @@ class LevelData:
             seg = self.get_segment(p0, p1, sector_ids, textures)
             self.raw_segments.append(seg)
             
-    def get_segment
+    def get_segment(self, p0, p1, sector_ids, tex_ids):
+        seg = Segment(
+            p0=p0,
+            p1=p1,
+            
+            sector_id=sector_ids[0],
+            back_sector_id=sector_ids[1],
+            
+            low_tex_id=tex_ids[0],
+            mid_tex_id= tex_ids[1],
+            up_tex_id=tex_ids[2],
+        )
+        return seg

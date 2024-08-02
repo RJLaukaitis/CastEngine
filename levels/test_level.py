@@ -1,6 +1,5 @@
 from settings import *
 
-
 # points
 P_00 = (0.0, 0.0)
 P_01 = (7.0, 0.0)
@@ -9,6 +8,12 @@ P_03 = (12.0, 6.0)
 #
 P_04 = (7.0, 6.0)
 P_05 = (0.0, 6.0)
+
+#column
+P_06 = (5.0,2.5)
+P_07 = (4.5,2.5)
+P_08 = (4.5,3.0)
+P_09 = (5.0,3.0)
 
 SECTOR_DATA = {
     0: dict(floor_h=0.0, ceil_h=3.0),
@@ -27,7 +32,7 @@ SEGMENTS = [
 
 ]
 
-SEGMENTS_OF_SECTOR_BOUNDARIES = {
+SEGMENTS_OF_SECTOR_BOUNDARIES = [
     #seg points(vertices), sector ids(front or back sector), texture ids (low,mid,up)
     
     #sector 0
@@ -40,4 +45,15 @@ SEGMENTS_OF_SECTOR_BOUNDARIES = {
     [(P_01, P_02), (0, _), (_,_,_)],
     [(P_02, P_03), (0, _), (_,_,_)],
     [(P_03, P_04), (0, _), (_,_,_)],
-}
+]
+
+
+SEGMENTS_WITHIN_SECTORS = [
+    #sector0
+    #column
+    [(P_06, P_07), (0,_), (_,_,_)],
+    [(P_07, P_08), (0,_), (_,_,_)],
+    [(P_08, P_09), (0,_), (_,_,_)],
+    [(P_09, P_06), (0,_), (_,_,_)],
+
+]

@@ -6,7 +6,10 @@ class Models:
     def __init__(self, engine):
         self.engine = engine
         #
+        self.sectors = engine.level_data.sectors
         self.raw_segments = engine.level_data.raw_segments
+        self.segments = engine.bsp_builder.segments
+        #self.sector_segments = engine.level_data.sector_segments
         #
         self.wall_models: list[ray.Model] = []
         #
@@ -16,8 +19,30 @@ class Models:
     def build_wall_models(self):
         for seg in self.raw_segments:
             #
-            wall_model = WallModel(self.engine, seg).model
-            self.add_wall_model(wall_model, seg)
+            if seg.back_sector_id is None:
+                
+                #solid wall
+                wall = WallModel(self,seg,wall_type='solid')
+                self.add_wall_model(wall,seg)
+                
+            else:
+                front_sector = self.sectors[seg.sector_id]
+                back_sector = self.sectors[seg.back_sector_id]
+
+                #portal low wall, built depending on floor height difference
+                if abs(front_sector.floor_h - back_sector.floor_h) > EPS:
+                    wall = WallModel(self, seg, wall_type='portal_low')
+                    self.add_wall_model(wall, seg)
+                
+                #portal upper wall, built depending on ceiling height difference
+                if abs(front_sector.ceil_h - back_sector.ceil_h) > EPS:
+                    wall = WallModel(self, seg, wall_type='portal_up')
+                    self.add_wall_model(wall,seg)
+                
+                #portal middle wall, only built if texture is set
+                if seg.mid_tex_id is None:
+                    wall = WallModel(self,seg,wall_type='portal_mid')
+                    self.add_wall_model(wall,seg)                
 
     def add_wall_model(self, wall_model, segment):
         self.wall_models.append(wall_model)
@@ -27,9 +52,12 @@ class Models:
 
 
 class WallModel:
-    def __init__(self, engine, segment):
-        self.engine = engine
+    def __init__(self, models,segment, wall_type='solid'):
+        self.engine = models.engine
         self.segment = segment
+        self.sectors = self.engine.level_data.sectors
+        self.wall_type = wall_type
+        
         #
         self.model: ray.Model = self.get_model()
 
@@ -54,7 +82,7 @@ class WallModel:
 
         # get tex coords
         width = glm.length(delta)
-        bottom, top = 0.0, 1.0
+        bottom, top = self.get_wall_height_data()
         #
         uv0, uv1, uv2, uv3 = (0, bottom), (width, bottom), (width, top), (0, top)
         tex_coords = glm.array([glm.vec2(v) for v in [uv0, uv1, uv2, uv3]])
@@ -91,3 +119,27 @@ class WallModel:
         ray.unload_image(image)
         #
         return texture
+    
+    def get_wall_height_data(self):
+        front_sector = self.sectors[self.segment.sector_id]
+        
+        if self.wall_type == 'solid':
+            bottom, top = front_sector.floor_h, front_sector.ceil_h
+            return bottom, top
+
+        back_sector = self.sectors[self.segment.back_sector_id]
+        
+        if self.wall_type =='portal_low':
+            bottom, top = front_sector.floor_h, back_sector.floor_h
+        
+        elif self.wall_type=='portal_up':
+            bottom, top = front_sector.ceil_h, back_sector.ceil_h
+        
+        elif self.wall_type == 'portal_mid':
+            bottom, top = (
+                max(front_sector.floor_h, back_sector.floor_h),
+                min(front_sector.ceil_h, back_sector.ceil_h),
+            )
+        
+        bottom, top = min(bottom, top), max(top,bottom)
+        return bottom, top
