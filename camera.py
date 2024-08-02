@@ -23,4 +23,68 @@ class Camera:
             ray.CAMERA_PERSPECTIVE
         )
         return cam
+    
+    def pre_update(self):
+        self.ini_cam_step()
+        self.update_vectors()
+    
+    def update(self):
+        self.check_cam_step()
+        self.update_pos_2d()
+        self.move()
+    
+    def update_vectors(self):
+        self.forward = self.get_forward()
+        self.right = cross(self.forward,self.fake_up)
+    
+    def get_forward(self) -> glm.vec3:
+        return normalize(vec3(
+            self.target.x -self.pos_3.x,
+            self.target.y -self.pos_3.y,
+            self.target.z -self.pos_3.z,
+        ))
+    
+    def init_cam_step(self):
+        self.speed = CAM_SPEED * self.app.dt
+        self.cam_step *= 0
+    
+    def step_forward(self):
+        self.cam_step += self.speed * self.forward
+    
+    def step_back(self):
+        self.cam_step += -self.speed * self.forward
+    
+    def step_left(self):
+        self.cam_step += -self.speed * self.right
+    
+    def step_right(self):
+        self.cam_step += self.speed * self.right
+    
+    def check_cam_step(self):
+        dx, dz = self.cam_step.xz
+        if dx and dz:
+            self.cam_step *= CAM_DIAG_MOVE_CORR
+    
+    def move(self):
+        dx, dz = self.cam_step.xz
+        self.move_x(dx)
+        self.move_z(dz)
+    
+    def move_x(self, dx):
+        self.pos_3d.x += dx
+        self.target.x += dx
+    
+    def move_z(self, dz):
+        self.pos_3d.z += dz
+        self.target.z += dz
+    
+    def update_pos_2d(self):
+        self.pos_2d[0] = self.pos_3d.x
+        self.pos_2d[1] = self.pos_3d.z
+        
+        
+        
+    
+    
+        
         
