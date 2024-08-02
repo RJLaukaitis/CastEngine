@@ -4,6 +4,10 @@ from engine import Engine
 class App:
     ray.init_window(WIN_WIDTH,WIN_HEIGHT, 'Cast Engine')
     
+    ray.hide_cursor()
+    ray.disable_cursor()
+
+    
     def __init__(self):
         self.dt = 0.0
         self.engine = Engine(app=self)

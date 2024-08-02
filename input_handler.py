@@ -1,7 +1,6 @@
 from settings import *
 from enum import IntEnum, auto
 from pyray import is_key_down, is_key_pressed, KeyboardKey
-from camera import *
 
 class Key(IntEnum):
     
@@ -10,6 +9,7 @@ class Key(IntEnum):
     STRAFE_LEFT = KeyboardKey.KEY_A
     STRAFE_RIGHT = KeyboardKey.KEY_D
     
+    MAP = KeyboardKey.KEY_M
 
 class InputHandler:
     def __init__(self,engine):
@@ -28,3 +28,7 @@ class InputHandler:
         
         elif is_key_down(Key.STRAFE_LEFT):
             self.camera.step_left()
+        
+        if is_key_pressed(Key.MAP):
+            self.engine.map_renderer.is_draw_map = not self.engine.map_renderer.is_draw_map
+            self.engine.view_renderer.update_screen_tint()
