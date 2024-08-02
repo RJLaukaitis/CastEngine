@@ -21,7 +21,7 @@ P_10 = (5.0,6.0)
 P_11 = (6.0,6.0)
 
 SETTINGS = {
-    'seed': 565,
+    'seed': 538,
     'cam_pos': (12, CAM_HEIGHT,12),
     'cam_target': (5, CAM_HEIGHT,5)
 }
