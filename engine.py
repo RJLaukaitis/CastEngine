@@ -4,6 +4,7 @@ from map_renderer import MapRenderer
 from bsp.bsp_builder import BSPTreeBuilder
 from bsp.bsp_traverser import BSPTreetraverser
 from camera import Camera
+from input_handler import InputHandler
 
 class Engine: 
     def __init__(self, app):
@@ -13,12 +14,19 @@ class Engine:
         self.bsp_builder = BSPTreeBuilder(self)
         
         self.camera = Camera(self)
+        self.input_handler = InputHandler(self)
         
         self.bsp_traverser = BSPTreetraverser(self)
         self.map_renderer = MapRenderer(self)
     
     def update(self):
+        self.camera.pre_update()
+        
+        self.input_handler.update()
+        
+        self.camera.update()
         self.bsp_traverser.update()
+
     
     def draw_2d(self):
         #self.map_renderer.draw()

@@ -12,7 +12,13 @@ class Camera:
         self.target = self.m_cam.target
         
         self.pos_3d = self.m_cam.position
-        self.pos_2d = vec2(self.pos_3d.x, self.pos_3d.z)
+        self.pos_2d: glm.vec2 = vec2(self.pos_3d.x, self.pos_3d.z)
+                
+        self.speed = CAM_SPEED
+        self.cam_step = vec3(0)
+        #
+        self.forward = vec3(0)
+        self.right = vec3(0)
         
     def get_camera(self):
         cam = ray.Camera3D(
@@ -25,7 +31,7 @@ class Camera:
         return cam
     
     def pre_update(self):
-        self.ini_cam_step()
+        self.init_cam_step()
         self.update_vectors()
     
     def update(self):
