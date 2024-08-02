@@ -1,2 +1,2 @@
 # CastEngine
-A Raycasting render engine built with py
+A Raycasting render engine built with python
